@@ -138,7 +138,7 @@ session = requests.session()
 session.cookies['.ROBLOSECURITY'] = config["cookie"] 
 
 @bot.hybrid_command()
-@app_commands.allowed_installs(guilds=False, users=True)
+@app_commands.allowed_installs(guilds=True, users=True)
 @app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
 @commands.cooldown(1, 14, commands.BucketType.user)
 async def info(ctx, *, item_id1: str):
@@ -156,7 +156,7 @@ async def info(ctx, *, item_id1: str):
             item_id = item_id1
 
         if not item_id:
-            await ctx.reply("Please add an item link or item ID", mention_author=False, allowed_mentions=discord.AllowedMentions(everyone=False, roles=False, users=False))
+            await ctx.reply("⚠️ Please add an item link or item ID", mention_author=False, allowed_mentions=discord.AllowedMentions(everyone=False, roles=False, users=False))
             return
 
         details_url = f"https://economy.roblox.com/v2/assets/{item_id}/details"
@@ -178,6 +178,7 @@ async def info(ctx, *, item_id1: str):
             dt_objectupdate = iso8601.parse_date(update)
             updatediscord_timestampTR = f"<t:{int(dt_objectupdate.timestamp())}:R>"
             updatediscord_timestampT = f"<t:{int(dt_objectupdate.timestamp())}>"
+            
             if details_data.get("CollectiblesItemDetails", {}):
                 total_quantity = details_data.get("CollectiblesItemDetails", {}).get("TotalQuantity", 0)
             remaining = details_data.get("Remaining")
@@ -197,50 +198,49 @@ async def info(ctx, *, item_id1: str):
                         game_names.append(real_game_name)
                         game_idlink = f"{real_game_id}"
                         game_links.append(game_idlink)
-            thumbnail_url = f"https://thumbnails.roblox.com/v1/assets?assetIds={item_id}&returnPolicy=PlaceHolder&size=150x150&format=Png"
-            thumbnail_response = session.get(thumbnail_url)
-            if thumbnail_response.status_code == 200:
-                thumbnail_data = thumbnail_response.json()
-                image_url = thumbnail_data["data"][0]["imageUrl"]
-            else:
-                image_url = ""
+
             if details_data.get('CollectiblesItemDetails', {})  :
                 if details_data.get('CollectiblesItemDetails', {}).get('CollectibleQuantityLimitPerUser', 0) is not None:
                     quantity_limit = details_data.get('CollectiblesItemDetails', {}).get('CollectibleQuantityLimitPerUser', 0)
                 else:
                     quantity_limit = "None"
-            if details_data.get('CollectiblesItemDetails', {}):
-                if details_data.get('CollectiblesItemDetails', {}).get('CollectibleQuantityLimitPerUser', 0) is not None:
-                    quantity_limit = details_data.get('CollectiblesItemDetails', {}).get('CollectibleQuantityLimitPerUser', 0)
-                else:
-                    quantity_limit = "None"
-            else:
-                quantity_limit = None
-            description = f"# [{name}](https://www.roblox.com/catalog/{item_id}/)\n**Creator:** {creator}"
-            if details_data.get("IsForSale") is not None:
-                description += "\n**On Sale**: " + str(details_data.get("IsForSale"))
-            if assettypes.get(details_data.get('AssetTypeId')):
-                description += f"\n**Accessory Type:** {str(assettypes[details_data.get('AssetTypeId')])}"
 
-            description += f"\n**Description:**\n ```{descriptionitem} ```"
+            description = f"# [{name}](https://www.roblox.com/catalog/{item_id}/)\n**👤 Creator:** {creator}"
+            if details_data.get("IsForSale") is not None:
+                description += "\n💰 **On Sale**: " + str(details_data.get("IsForSale"))
+            if assettypes.get(details_data.get('AssetTypeId')):
+                description += f"\n🔖 **Accessory Type:** {str(assettypes[details_data.get('AssetTypeId')])}"
+
+            description += f"\n📝 **Description:**\n ```{descriptionitem} ```"
 
             if quantity_limit is not None:
-                description += f"\n**Quantity Limit:** {quantity_limit} Per User"
+                description += f"\n🔢 **Quantity Limit:** {quantity_limit} Per User"
+
+            thumbnail_url = f"https://thumbnails.roblox.com/v1/assets?assetIds={item_id}&returnPolicy=PlaceHolder&size=150x150&format=Png"
+            thumbnail_response = session.get(thumbnail_url)
+            if thumbnail_response.status_code == 200:
+                thumbnail_data = thumbnail_response.json()
+                image_url = thumbnail_data["data"][0]["imageUrl"]
+                if thumbnail_data["data"][0]["state"] is not None:
+                    description += f"\n🔄 **Asset State:** {thumbnail_data['data'][0]['state']}"
+            else:
+                image_url = ""
 
             embed = discord.Embed(description=description)
             embed.set_thumbnail(url=image_url)
             embed.timestamp = datetime.datetime.utcnow()
             embed.set_footer(text='nyaa~w redblue was here ^~^', icon_url="https://i.imgur.com/hWCLhIZ.png")
             embed.add_field(
-                name="__Price Information__",
+                name="__💸 Price Information__",
                 value=f"> **Original Price**: {price_in_robux}" + (f"\n> **Lowest Resale Price**: {details_data.get('CollectiblesItemDetails', {}).get('CollectibleLowestResalePrice', 0)}" if details_data.get('CollectiblesItemDetails', {}) is not None and details_data.get('CollectiblesItemDetails', {}).get('CollectibleLowestResalePrice', 0) is not None and details_data.get('CollectiblesItemDetails', {}).get('CollectibleLowestResalePrice', 0) != 0 else ''),
                 inline=False
             )
             embed.add_field(
-                name="__Time Information__",
+                name="__⏰ Time Information__",
                 value=f"> **Created**: {creationdiscord_timestampTR} | {creationdiscord_timestampT}\n> **Last Updated**: {updatediscord_timestampTR} | {updatediscord_timestampT}",
                 inline=False
             )
+
             if str(assettypes[details_data.get('AssetTypeId')]) == "Place":
                 not_item = True
             if remaining is not None and total_quantity is not None and total_quantity != 0:
@@ -250,7 +250,7 @@ async def info(ctx, *, item_id1: str):
                 remaining_percent = None
             if remaining is not None and total_quantity is not None and total_quantity != 0:
                 embed.add_field(
-                    name="__Stock Info__",
+                    name="__📦 Stock Info__",
                     value=(f"> Remaining: {remaining}/{total_quantity}\n" if remaining is not None and total_quantity is not None else '') +
                             (f"> Percentage Left: {given_percent:.1f}% | ({str(remaining)} left)\n" if given_percent is not None else '') +
                             (f"> Percentage Sold: {remaining_percent:.1f}% | ({str(total_quantity-remaining)} sold)" if remaining_percent is not None else ''),
@@ -259,20 +259,21 @@ async def info(ctx, *, item_id1: str):
             if details_data.get("SaleLocation", {}) and details_data.get("SaleLocation", {}).get("UniverseIds", []):
                 if details_data.get("SaleLocation", {}).get("SaleLocationType") == 6 :
                     for idx, game_name in enumerate(game_names, start=1):
-                        embed.add_field(name=f"〘{idx}〙 {game_name}", value=f"**[Game Link](https://www.roblox.com/games/{str(game_links[idx-1])}/Redblue)**  ``|-|``  **[Join Game](https://www.roblox.com/games/start?launchData=redbluewashere&placeId={str(game_links[idx-1])})**", inline=False)
+                        embed.add_field(name=f"🎮 〘{idx}〙 {game_name}", value=f"**[Game Link](https://www.roblox.com/games/{str(game_links[idx-1])}/Redblue)**  ``|-|``  **[Join Game](https://www.roblox.com/games/start?launchData=redbluewashere&placeId={str(game_links[idx-1])})**", inline=False)
             else:
                 if not_item == False and details_data.get("IsForSale") == True:
-                    embed.add_field(name="Website Item!!", value=f"**[Wagoogus Link](https://www.roblox.com/games/975820487)**  ``|-|``  **[Join Wagoogus](https://www.roblox.com/games/start?launchData=redbluewashere&placeId=975820487)**\n**[Rolimons Link](https://www.roblox.com/games/14056754882)**  ``|-|``  **[Join Rolimons](https://www.roblox.com/games/start?launchData=redbluewashere&placeId=14056754882)**", inline=False)
+                    embed.add_field(name="🌐 Website Item!!", value=f"**[Redblue Link](https://www.roblox.com/games/15765003674)**  ``|-|``  **[Join Redblue](https://www.roblox.com/games/start?launchData=redbluewashere&placeId=15765003674)**\n**[Rolimons Link](https://www.roblox.com/games/14056754882)**  ``|-|``  **[Join Rolimons](https://www.roblox.com/games/start?launchData=redbluewashere&placeId=14056754882)**", inline=False)
             await ctx.reply(str(item_id), mention_author=False,embed=embed, allowed_mentions=discord.AllowedMentions(everyone=False, roles=False, users=False))
         else:
-            await ctx.reply("Failed to retrieve item details.", mention_author=False, allowed_mentions=discord.AllowedMentions(everyone=False, roles=False, users=False))
+            await ctx.reply("❌ Failed to retrieve item details.", mention_author=False, allowed_mentions=discord.AllowedMentions(everyone=False, roles=False, users=False))
     except Exception as e:
         traceback.print_exc()
-        await ctx.reply("Error occurred or invalid item ID. ", mention_author=False, allowed_mentions=discord.AllowedMentions(everyone=False, roles=False, users=False))
+        await ctx.reply("⚠️ Error occurred or invalid item ID.", mention_author=False, allowed_mentions=discord.AllowedMentions(everyone=False, roles=False, users=False))
+
 
 
 @bot.hybrid_command()
-@app_commands.allowed_installs(guilds=False, users=True)
+@app_commands.allowed_installs(guilds=True, users=True)
 @app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
 @commands.cooldown(1, 14, commands.BucketType.user)
 async def stock(ctx, *, item_id1: str):
@@ -284,6 +285,7 @@ async def stock(ctx, *, item_id1: str):
             item_id = item_id1.split("/item/")[1].split("/")[0]
         else:
             item_id = item_id1
+        
         if item_id:
             details_url = f"https://economy.roblox.com/v2/assets/{item_id}/details"
             details_response = session.get(details_url)
@@ -296,12 +298,13 @@ async def stock(ctx, *, item_id1: str):
                 if details_data.get("CollectiblesItemDetails") and details_data.get("CollectiblesItemDetails").get("TotalQuantity"):
                     total_quantity = details_data.get("CollectiblesItemDetails").get("TotalQuantity", 0)
                 remaining = details_data.get("Remaining", 0)
+
                 embed = discord.Embed(
-                    description=f"# [{name}](https://www.roblox.com/catalog/{item_id}/)\n**Creator:** {creator}"
+                    description=f"# [{name}](https://www.roblox.com/catalog/{item_id}/)\n👤 **Creator:** {creator}"
                 )
-                
                 embed.timestamp = datetime.datetime.utcnow()
-                embed.set_footer(text='nyaa~w redblue was here ^~^',icon_url="https://i.imgur.com/hWCLhIZ.png")
+                embed.set_footer(text='nyaa~w redblue was here ^~^', icon_url="https://i.imgur.com/hWCLhIZ.png")
+                
                 if total_quantity != 0 and total_quantity is not None:
                     if remaining is not None and total_quantity is not None:
                         given_percent, remaining_percent = calculate_percentages(remaining, total_quantity)
@@ -309,21 +312,23 @@ async def stock(ctx, *, item_id1: str):
                         given_percent = None
                         remaining_percent = None
                     embed.add_field(
-                        name="__Stock Info__",
-                        value=f"> Remaining: {remaining}/{total_quantity}\n" +
-                        (f"> Percentage Left: {given_percent:.1f}% | ({str(remaining)} left)\n" if given_percent is not None else '') +
-                        (f"> Percentage Sold: {remaining_percent:.1f}% | ({str(total_quantity-remaining)} sold)" if remaining_percent is not None else ''),
+                        name="📊 __Stock Info__",
+                        value=f"> 🛒 Remaining: {remaining}/{total_quantity}\n" +
+                        (f"> 💯 Percentage Left: {given_percent:.1f}% | ({str(remaining)} left)\n" if given_percent is not None else '') +
+                        (f"> 📉 Percentage Sold: {remaining_percent:.1f}% | ({str(total_quantity - remaining)} sold)" if remaining_percent is not None else ''),
                         inline=False
                     )
 
-                await ctx.reply(str(item_id), mention_author=False,embed=embed, allowed_mentions=discord.AllowedMentions(everyone=False,roles=False,users=False))
+                await ctx.reply(str(item_id), mention_author=False, embed=embed, allowed_mentions=discord.AllowedMentions(everyone=False, roles=False, users=False))
             else:
-                await ctx.reply("Failed to retrieve item details.", mention_author=False, allowed_mentions=discord.AllowedMentions(everyone=False,roles=False,users=False))
-        if item_id1 is None: 
-            await ctx.reply("Please add an item link or item ID", mention_author=False, allowed_mentions=discord.AllowedMentions(everyone=False,roles=False,users=False))
+                await ctx.reply("⚠️ Failed to retrieve item details.", mention_author=False, allowed_mentions=discord.AllowedMentions(everyone=False, roles=False, users=False))
+        
+        if item_id1 is None:
+            await ctx.reply("⚠️ Please add an item link or item ID", mention_author=False, allowed_mentions=discord.AllowedMentions(everyone=False, roles=False, users=False))
+    
     except Exception as e:
         print(e)
-        await ctx.reply("Error occurred or invalid item ID.", mention_author=False, allowed_mentions=discord.AllowedMentions(everyone=False,roles=False,users=False))
+        await ctx.reply("❌ Error occurred or invalid item ID.", mention_author=False, allowed_mentions=discord.AllowedMentions(everyone=False, roles=False, users=False))
 
 
 @stock.error
@@ -335,7 +340,7 @@ async def stock_error(ctx, error):
         await ctx.reply(embed=em, mention_author=False)
 
 @bot.hybrid_command()
-@app_commands.allowed_installs(guilds=False, users=True)
+@app_commands.allowed_installs(guilds=True, users=True)
 @app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
 @commands.cooldown(1, 14, commands.BucketType.user)
 
@@ -377,7 +382,7 @@ async def item2universe_error(ctx, error):
         await ctx.reply(embed=em, mention_author=False)
 
 @bot.hybrid_command()
-@app_commands.allowed_installs(guilds=False, users=True)
+@app_commands.allowed_installs(guilds=True, users=True)
 @app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
 @commands.cooldown(1, 14, commands.BucketType.user)
 async def item2game(ctx, item_id1: str):
@@ -429,7 +434,7 @@ async def item2game_error(ctx, error):
         em.set_footer(text='nyaa~w redblue was here ^~^',icon_url="https://i.imgur.com/hWCLhIZ.png")
         await ctx.reply(embed=em, mention_author=False)
 @bot.hybrid_command()
-@app_commands.allowed_installs(guilds=False, users=True)
+@app_commands.allowed_installs(guilds=True, users=True)
 @app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
 @commands.cooldown(1, 14, commands.BucketType.user)
 
@@ -489,7 +494,7 @@ async def item2places_error(ctx, error):
         em.set_footer(text='nyaa~w redblue was here ^~^',icon_url="https://i.imgur.com/hWCLhIZ.png")
         await ctx.reply(embed=em, mention_author=False)
 @bot.hybrid_command()
-@app_commands.allowed_installs(guilds=False, users=True)
+@app_commands.allowed_installs(guilds=True, users=True)
 @app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
 @commands.cooldown(1, 14, commands.BucketType.user)
 
@@ -516,7 +521,7 @@ async def game2universe_error(ctx, error):
         em.set_footer(text='nyaa~w redblue was here ^~^',icon_url="https://i.imgur.com/hWCLhIZ.png")
         await ctx.reply(embed=em, mention_author=False)
 @bot.hybrid_command()
-@app_commands.allowed_installs(guilds=False, users=True)
+@app_commands.allowed_installs(guilds=True, users=True)
 @app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
 @commands.cooldown(1, 14, commands.BucketType.user)
 async def game2places(ctx, game_id1: str):
@@ -575,7 +580,7 @@ async def game2places_error(ctx, error):
         await ctx.reply(embed=em, mention_author=False)
 
 @bot.hybrid_command()
-@app_commands.allowed_installs(guilds=False, users=True)
+@app_commands.allowed_installs(guilds=True, users=True)
 @app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
 @commands.cooldown(1, 14, commands.BucketType.user)
 async def ping(ctx):
@@ -592,7 +597,7 @@ async def ping_error(ctx, error):
         await ctx.reply(embed=em, mention_author=False)
 
 @bot.hybrid_command()
-@app_commands.allowed_installs(guilds=False, users=True)
+@app_commands.allowed_installs(guilds=True, users=True)
 @app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
 @commands.cooldown(1, 14, commands.BucketType.user)
 async def support(ctx):
@@ -608,7 +613,7 @@ async def support_error(ctx, error):
         await ctx.reply(embed=em, mention_author=False)
 
 @bot.hybrid_command()
-@app_commands.allowed_installs(guilds=False, users=True)
+@app_commands.allowed_installs(guilds=True, users=True)
 @app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
 @commands.cooldown(1, 14, commands.BucketType.user)
 async def convertvip(ctx, vip_link: str):
@@ -626,7 +631,7 @@ async def convertvip_error(ctx, error):
         em.set_footer(text='nyaa~w redblue was here ^~^', icon_url="https://i.imgur.com/hWCLhIZ.png")
         await ctx.reply(embed=em, mention_author=False)
 @bot.hybrid_command()
-@app_commands.allowed_installs(guilds=False, users=True)
+@app_commands.allowed_installs(guilds=True, users=True)
 @app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
 @commands.cooldown(1, 14, commands.BucketType.user)
 async def redblue(ctx):
@@ -660,7 +665,7 @@ async def redblue_error(ctx, error):
 
 
 @bot.hybrid_command()
-@app_commands.allowed_installs(guilds=False, users=True)
+@app_commands.allowed_installs(guilds=True, users=True)
 @app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
 @commands.cooldown(1, 5, commands.BucketType.user)
 async def uwuify(ctx,*, message : str):
@@ -684,7 +689,7 @@ async def uwuify_error(ctx, error):
 
 
 @bot.hybrid_command()
-@app_commands.allowed_installs(guilds=False, users=True)
+@app_commands.allowed_installs(guilds=True, users=True)
 @app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
 @commands.cooldown(1, 14, commands.BucketType.user)
 async def uploader(ctx, item_id1: str):
@@ -799,7 +804,7 @@ async def on_message(message):
 
 if config["suggestive_commands"]  == True:
     @bot.hybrid_command()
-    @app_commands.allowed_installs(guilds=False, users=True)
+    @app_commands.allowed_installs(guilds=True, users=True)
     @app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
     @commands.cooldown(1, 14, commands.BucketType.user)
     async def waifu(ctx):
@@ -843,7 +848,7 @@ if config["suggestive_commands"]  == True:
             em.set_footer(text='redblue is disgusted, redblue better',icon_url="https://i.imgur.com/hWCLhIZ.png")
             await ctx.reply(embed=em, mention_author=False)
     @bot.hybrid_command()
-    @app_commands.allowed_installs(guilds=False, users=True)
+    @app_commands.allowed_installs(guilds=True, users=True)
     @app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
     @commands.cooldown(1, 18, commands.BucketType.user)
     async def neko(ctx, content_type="safe"):
