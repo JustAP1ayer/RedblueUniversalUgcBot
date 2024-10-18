@@ -199,11 +199,13 @@ async def info(ctx, *, item_id1: str):
                         game_idlink = f"{real_game_id}"
                         game_links.append(game_idlink)
 
-            if details_data.get('CollectiblesItemDetails', {})  :
+            if details_data.get('CollectiblesItemDetails', {}):
                 if details_data.get('CollectiblesItemDetails', {}).get('CollectibleQuantityLimitPerUser', 0) is not None:
                     quantity_limit = details_data.get('CollectiblesItemDetails', {}).get('CollectibleQuantityLimitPerUser', 0)
                 else:
-                    quantity_limit = "None"
+                    quantity_limit = 'None'
+            else:
+                quantity_limit = None
 
             description = f"# [{name}](https://www.roblox.com/catalog/{item_id}/)\n**👤 Creator:** {creator}"
             if details_data.get("IsForSale") is not None:
@@ -228,7 +230,7 @@ async def info(ctx, *, item_id1: str):
 
             embed = discord.Embed(description=description)
             embed.set_thumbnail(url=image_url)
-            embed.timestamp = datetime.datetime.utcnow()
+            embed.timestamp = datetime.datetime.now(datetime.timezone.utc)
             embed.set_footer(text='nyaa~w redblue was here ^~^', icon_url="https://i.imgur.com/hWCLhIZ.png")
             embed.add_field(
                 name="__💸 Price Information__",
@@ -297,12 +299,15 @@ async def stock(ctx, *, item_id1: str):
                 total_quantity = 0
                 if details_data.get("CollectiblesItemDetails") and details_data.get("CollectiblesItemDetails").get("TotalQuantity"):
                     total_quantity = details_data.get("CollectiblesItemDetails").get("TotalQuantity", 0)
+                else:
+                    total_quantity = None
+                    
                 remaining = details_data.get("Remaining", 0)
 
                 embed = discord.Embed(
                     description=f"# [{name}](https://www.roblox.com/catalog/{item_id}/)\n👤 **Creator:** {creator}"
                 )
-                embed.timestamp = datetime.datetime.utcnow()
+                embed.timestamp = datetime.datetime.now(datetime.timezone.utc)
                 embed.set_footer(text='nyaa~w redblue was here ^~^', icon_url="https://i.imgur.com/hWCLhIZ.png")
                 
                 if total_quantity != 0 and total_quantity is not None:
@@ -335,7 +340,7 @@ async def stock(ctx, *, item_id1: str):
 async def stock_error(ctx, error):
     if isinstance(error, commands.CommandOnCooldown):
         em = discord.Embed(title=f"Slow down!", description=f"Try again in {error.retry_after:.2f}s.", color=15548997)
-        em.timestamp = datetime.datetime.utcnow()
+        em.timestamp = datetime.datetime.now(datetime.timezone.utc)
         em.set_footer(text='nyaa~w redblue was here ^~^',icon_url="https://i.imgur.com/hWCLhIZ.png")
         await ctx.reply(embed=em, mention_author=False)
 
@@ -377,7 +382,7 @@ async def item2universe(ctx, item_id1: str):
 async def item2universe_error(ctx, error):
     if isinstance(error, commands.CommandOnCooldown):
         em = discord.Embed(title=f"Slow down!", description=f"Try again in {error.retry_after:.2f}s.", color=15548997)
-        em.timestamp = datetime.datetime.utcnow()
+        em.timestamp = datetime.datetime.now(datetime.timezone.utc)
         em.set_footer(text='nyaa~w redblue was here ^~^',icon_url="https://i.imgur.com/hWCLhIZ.png")
         await ctx.reply(embed=em, mention_author=False)
 
@@ -430,7 +435,7 @@ async def item2game(ctx, item_id1: str):
 async def item2game_error(ctx, error):
     if isinstance(error, commands.CommandOnCooldown):
         em = discord.Embed(title=f"Slow down!", description=f"Try again in {error.retry_after:.2f}s.", color=15548997)
-        em.timestamp = datetime.datetime.utcnow()
+        em.timestamp = datetime.datetime.now(datetime.timezone.utc)
         em.set_footer(text='nyaa~w redblue was here ^~^',icon_url="https://i.imgur.com/hWCLhIZ.png")
         await ctx.reply(embed=em, mention_author=False)
 @bot.hybrid_command()
@@ -490,7 +495,7 @@ async def item2places(ctx, item_id1: str):
 async def item2places_error(ctx, error):
     if isinstance(error, commands.CommandOnCooldown):
         em = discord.Embed(title=f"Slow down!", description=f"Try again in {error.retry_after:.2f}s.", color=15548997)
-        em.timestamp = datetime.datetime.utcnow()
+        em.timestamp = datetime.datetime.now(datetime.timezone.utc)
         em.set_footer(text='nyaa~w redblue was here ^~^',icon_url="https://i.imgur.com/hWCLhIZ.png")
         await ctx.reply(embed=em, mention_author=False)
 @bot.hybrid_command()
@@ -517,7 +522,7 @@ async def game2universe(ctx, game_id1: str):
 async def game2universe_error(ctx, error):
     if isinstance(error, commands.CommandOnCooldown):
         em = discord.Embed(title=f"Slow down!", description=f"Try again in {error.retry_after:.2f}s.", color=15548997)
-        em.timestamp = datetime.datetime.utcnow()
+        em.timestamp = datetime.datetime.now(datetime.timezone.utc)
         em.set_footer(text='nyaa~w redblue was here ^~^',icon_url="https://i.imgur.com/hWCLhIZ.png")
         await ctx.reply(embed=em, mention_author=False)
 @bot.hybrid_command()
@@ -575,7 +580,7 @@ async def game2places(ctx, game_id1: str):
 async def game2places_error(ctx, error):
     if isinstance(error, commands.CommandOnCooldown):
         em = discord.Embed(title=f"Slow down!", description=f"Try again in {error.retry_after:.2f}s.", color=15548997)
-        em.timestamp = datetime.datetime.utcnow()
+        em.timestamp = datetime.datetime.now(datetime.timezone.utc)
         em.set_footer(text='nyaa~w redblue was here ^~^',icon_url="https://i.imgur.com/hWCLhIZ.png")
         await ctx.reply(embed=em, mention_author=False)
 
@@ -592,7 +597,7 @@ async def ping(ctx):
 async def ping_error(ctx, error):
     if isinstance(error, commands.CommandOnCooldown):
         em = discord.Embed(title=f"Slow down!", description=f"Try again in {error.retry_after:.2f}s.", color=15548997)
-        em.timestamp = datetime.datetime.utcnow()
+        em.timestamp = datetime.datetime.now(datetime.timezone.utc)
         em.set_footer(text='nyaa~w redblue was here ^~^', icon_url="https://i.imgur.com/hWCLhIZ.png")
         await ctx.reply(embed=em, mention_author=False)
 
@@ -608,7 +613,7 @@ async def support(ctx):
 async def support_error(ctx, error):
     if isinstance(error, commands.CommandOnCooldown):
         em = discord.Embed(title=f"Slow down!", description=f"Try again in {error.retry_after:.2f}s.", color=15548997)
-        em.timestamp = datetime.datetime.utcnow()
+        em.timestamp = datetime.datetime.now(datetime.timezone.utc)
         em.set_footer(text='nyaa~w redblue was here ^~^', icon_url="https://i.imgur.com/hWCLhIZ.png")
         await ctx.reply(embed=em, mention_author=False)
 
@@ -627,7 +632,7 @@ async def convertvip(ctx, vip_link: str):
 async def convertvip_error(ctx, error):
     if isinstance(error, commands.CommandOnCooldown):
         em = discord.Embed(title=f"Slow down!", description=f"Try again in {error.retry_after:.2f}s.", color=15548997)
-        em.timestamp = datetime.datetime.utcnow()
+        em.timestamp = datetime.datetime.now(datetime.timezone.utc)
         em.set_footer(text='nyaa~w redblue was here ^~^', icon_url="https://i.imgur.com/hWCLhIZ.png")
         await ctx.reply(embed=em, mention_author=False)
 @bot.hybrid_command()
@@ -645,7 +650,7 @@ async def redblue(ctx):
             data = response.json()
             random_file = random.choice(data)
             embed = discord.Embed(title=f"meooow :3 redblue wife generated (Powered by Bing AI)", description=f"nyaaaaaaaaaw", color=10181046)
-            embed.timestamp = datetime.datetime.utcnow()
+            embed.timestamp = datetime.datetime.now(datetime.timezone.utc)
             embed.set_image(url=str(random_file['download_url']))
             embed.set_footer(text='nyaa~w redblue was here ^~^',icon_url="https://i.imgur.com/hWCLhIZ.png")
             await ctx.reply(embed=embed, mention_author=False) 
@@ -659,7 +664,7 @@ async def redblue(ctx):
 async def redblue_error(ctx, error):
     if isinstance(error, commands.CommandOnCooldown):
         em = discord.Embed(title=f"Slow down! (i love redblue too <3)", description=f"Try again in {error.retry_after:.2f}s.", color=15548997)
-        em.timestamp = datetime.datetime.utcnow()
+        em.timestamp = datetime.datetime.now(datetime.timezone.utc)
         em.set_footer(text='nyaa~w redblue was here ^~^',icon_url="https://i.imgur.com/hWCLhIZ.png")
         await ctx.reply(embed=em, mention_author=False, allowed_mentions=discord.AllowedMentions(everyone=False,roles=False,users=False))
 
@@ -672,7 +677,7 @@ async def uwuify(ctx,*, message : str):
     print(f"{ctx.message.author} used the command: uwuify")
     try:
         embed = discord.Embed(title=f"uwuified text made ^~^", description=f"```{uwu_converter(message)}```", color=7419530)
-        embed.timestamp = datetime.datetime.utcnow()
+        embed.timestamp = datetime.datetime.now(datetime.timezone.utc)
         embed.set_thumbnail(url="https://staticdelivery.nexusmods.com/mods/2861/images/thumbnails/243/243-1691911373-110081999.png")
 
         await ctx.reply(embed=embed, mention_author=False, allowed_mentions=discord.AllowedMentions(everyone=False,roles=False,users=False))
@@ -683,7 +688,7 @@ async def uwuify(ctx,*, message : str):
 async def uwuify_error(ctx, error):
     if isinstance(error, commands.CommandOnCooldown):
         em = discord.Embed(title=f"Slow down!", description=f"Try again in {error.retry_after:.2f}s.", color=15548997)
-        em.timestamp = datetime.datetime.utcnow()
+        em.timestamp = datetime.datetime.now(datetime.timezone.utc)
         em.set_footer(text='nyaa~w redblue was here ^~^',icon_url="https://i.imgur.com/hWCLhIZ.png")
         await ctx.reply(embed=em, mention_author=False, allowed_mentions=discord.AllowedMentions(everyone=False,roles=False,users=False))
 
@@ -728,7 +733,7 @@ async def uploader(ctx, item_id1: str):
                     thumbnail_url = f"https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds={str(creatorid)}&size=352x352&format=Png&isCircular=false"
                     thumbnail_response = session.get(thumbnail_url)
                     em.add_field(name=f"Creator ID: {creatorid}", value=f"https://www.roblox.com/users/{str(creatorid)}/profile", inline=False)
-                    em.timestamp = datetime.datetime.utcnow()
+                    em.timestamp = datetime.datetime.now(datetime.timezone.utc)
                     em.set_footer(text='nyaa~w redblue was here ^~^', icon_url="https://i.imgur.com/hWCLhIZ.png")
                     if thumbnail_response.status_code == 200:
                         thumbnail_data = thumbnail_response.json()
@@ -748,7 +753,7 @@ async def uploader(ctx, item_id1: str):
                     thumbnail_url = f"https://thumbnails.roblox.com/v1/groups/icons?groupIds={str(creatorid)}&size=420x420&format=Png&isCircular=false"
                     thumbnail_response = session.get(thumbnail_url)
                     em.add_field(name=f"Group ID: {creatorid}", value=f"https://www.roblox.com/groups/{str(creatorid)}/profile", inline=False)
-                    em.timestamp = datetime.datetime.utcnow()
+                    em.timestamp = datetime.datetime.now(datetime.timezone.utc)
                     em.set_footer(text='nyaa~w redblue was here ^~^', icon_url="https://i.imgur.com/hWCLhIZ.png")
                     if thumbnail_response.status_code == 200:
                         thumbnail_data = thumbnail_response.json()
@@ -775,7 +780,7 @@ async def uploader(ctx, item_id1: str):
 async def uploader_error(ctx, error):
     if isinstance(error, commands.CommandOnCooldown):
         em = discord.Embed(title=f"Slow down!", description=f"Try again in {error.retry_after:.2f}s.", color=15548997)
-        em.timestamp = datetime.datetime.utcnow()
+        em.timestamp = datetime.datetime.now(datetime.timezone.utc)
         em.set_footer(text='nyaa~w redblue was here ^~^', icon_url="https://i.imgur.com/hWCLhIZ.png")
         await ctx.reply(embed=em, mention_author=False, allowed_mentions=discord.AllowedMentions(everyone=False,roles=False,users=False))
 '''@bot.event
@@ -789,7 +794,7 @@ async def on_message(message):
                 random_gif = random.choice(response.json()['results'])
                 preview_url = random_gif['media'][0]['gif']['preview']
                 embed = discord.Embed(title=f"meooow :3 boykisser easter egg found", description=f"nyaaaaaaaaaw", color=10181046)
-                embed.timestamp = datetime.datetime.utcnow()
+                embed.timestamp = datetime.datetime.now(datetime.timezone.utc)
                 embed.set_image(url=str(preview_url))
                 embed.set_footer(text='nyaa~w redblue was here ^~^',icon_url="https://i.imgur.com/hWCLhIZ.png")
                 await message.channel.send(embed=embed) 
@@ -826,7 +831,7 @@ if config["suggestive_commands"]  == True:
                         if waifu_image.get("artist").get("twitter") is not None:
                             embed.add_field(name=f"Artist's Twitter:", value=str(waifu_image.get('artist').get('twitter')), inline=False)
                     if waifu_url:
-                        embed.timestamp = datetime.datetime.utcnow()
+                        embed.timestamp = datetime.datetime.now(datetime.timezone.utc)
                         embed.set_image(url=str(waifu_url))
                         embed.set_footer(text='nyaa~w redblue was here ^~^',icon_url="https://i.imgur.com/hWCLhIZ.png")
                         await ctx.reply(embed=embed, mention_author=False) 
@@ -844,7 +849,7 @@ if config["suggestive_commands"]  == True:
     async def waifu_error(ctx, error):
         if isinstance(error, commands.CommandOnCooldown):
             em = discord.Embed(title=f"Slow down! (u weird asf tho)", description=f"Try again in {error.retry_after:.2f}s.", color=15548997)
-            em.timestamp = datetime.datetime.utcnow()
+            em.timestamp = datetime.datetime.now(datetime.timezone.utc)
             em.set_footer(text='redblue is disgusted, redblue better',icon_url="https://i.imgur.com/hWCLhIZ.png")
             await ctx.reply(embed=em, mention_author=False)
     @bot.hybrid_command()
@@ -871,7 +876,7 @@ if config["suggestive_commands"]  == True:
                         if waifu_image.get("artist").get("links") is not None:
                             embed.add_field(name=f"links:", value=str(waifu_image.get("artist").get("links")), inline=False)
                     if waifu_url:
-                        embed.timestamp = datetime.datetime.utcnow()
+                        embed.timestamp = datetime.datetime.now(datetime.timezone.utc)
                         embed.set_image(url=str(waifu_url))
                         embed.set_footer(text='nyaa~w redblue was here ^~^',icon_url="https://i.imgur.com/hWCLhIZ.png")
                         await ctx.reply(embed=embed, mention_author=False) 
@@ -888,7 +893,7 @@ if config["suggestive_commands"]  == True:
     async def neko_error(ctx, error):
         if isinstance(error, commands.CommandOnCooldown):
             em = discord.Embed(title=f"Slow down! (u weird asf tho)", description=f"Try again in {error.retry_after:.2f}s.", color=15548997)
-            em.timestamp = datetime.datetime.utcnow()
+            em.timestamp = datetime.datetime.now(datetime.timezone.utc)
             em.set_footer(text='redblue is disgusted, redblue better',icon_url="https://i.imgur.com/hWCLhIZ.png")
             await ctx.reply(embed=em, mention_author=False)
 
