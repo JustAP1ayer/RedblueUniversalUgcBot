@@ -261,10 +261,10 @@ async def info(ctx, *, item_id1: str):
             if details_data.get("SaleLocation", {}) and details_data.get("SaleLocation", {}).get("UniverseIds", []):
                 if details_data.get("SaleLocation", {}).get("SaleLocationType") == 6 :
                     for idx, game_name in enumerate(game_names, start=1):
-                        embed.add_field(name=f"🎮 〘{idx}〙 {game_name}", value=f"**[Game Link](https://www.roblox.com/games/{str(game_links[idx-1])}/Redblue)**  ``|-|``  **[Join Game](https://www.roblox.com/games/start?launchData=redbluewashere&placeId={str(game_links[idx-1])})**", inline=False)
+                        embed.add_field(name=f"〘{idx}〙 {game_name}", value=f"- **[Game Link](https://www.roblox.com/games/{str(game_links[idx-1])}/Redblue)**  ``|-|``  **[Join Game](https://www.roblox.com/games/start?launchData=redbluewashere&placeId={str(game_links[idx-1])})**", inline=False)
             else:
                 if not_item == False and details_data.get("IsForSale") == True:
-                    embed.add_field(name="🌐 Website Item!!", value=f"**[Redblue Link](https://www.roblox.com/games/15765003674)**  ``|-|``  **[Join Redblue](https://www.roblox.com/games/start?launchData=redbluewashere&placeId=15765003674)**\n**[Rolimons Link](https://www.roblox.com/games/14056754882)**  ``|-|``  **[Join Rolimons](https://www.roblox.com/games/start?launchData=redbluewashere&placeId=14056754882)**", inline=False)
+                    embed.add_field(name="__🌐 Website Item!!__", value=f"> **[Redblue Link](https://www.roblox.com/games/15765003674)**  ``|-|``  **[Join Redblue](https://www.roblox.com/games/start?launchData=redbluewashere&placeId=15765003674)**\n> **[Rolimons Link](https://www.roblox.com/games/14056754882)**  ``|-|``  **[Join Rolimons](https://www.roblox.com/games/start?launchData=redbluewashere&placeId=14056754882)**", inline=False)
             await ctx.reply(str(item_id), mention_author=False,embed=embed, allowed_mentions=discord.AllowedMentions(everyone=False, roles=False, users=False))
         else:
             await ctx.reply("❌ Failed to retrieve item details.", mention_author=False, allowed_mentions=discord.AllowedMentions(everyone=False, roles=False, users=False))
