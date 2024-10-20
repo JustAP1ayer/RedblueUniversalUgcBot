@@ -146,6 +146,7 @@ async def info(ctx, *, item_id1: str):
     print(f"{ctx.message.author} used the command: Info with {item_id1}")
     try:
         not_item = False
+        item_id1 = item_id1.replace("fxroblox", "roblox")
         if "catalog/" in item_id1:
             item_id = item_id1.split("/catalog/")[1].split("/")[0]
         elif "item/" in item_id1:
@@ -285,6 +286,7 @@ async def info(ctx, *, item_id1: str):
 async def stock(ctx, *, item_id1: str):
     print(f"{ctx.message.author} used the command: Stock with {item_id1}")
     try:
+        item_id1 = item_id1.replace("fxroblox", "roblox")
         if "catalog/" in item_id1:
             item_id = item_id1.split("/catalog/")[1].split("/")[0]
         elif "item/" in item_id1:
@@ -356,6 +358,7 @@ async def stock_error(ctx, error):
 async def item2universe(ctx, item_id1: str):
     print(f"{ctx.message.author} used the command: item2universe with {item_id1}")
     try:
+        item_id1 = item_id1.replace("fxroblox", "roblox")
         if "catalog/" in item_id1:
             item_id = item_id1.split("/catalog/")[1].split("/")[0]
         elif "item/" in item_id1:
@@ -397,6 +400,7 @@ async def item2universe_error(ctx, error):
 async def item2game(ctx, item_id1: str):
     print(f"{ctx.message.author} used the command: item2game with {item_id1}")
     try:
+        item_id1 = item_id1.replace("fxroblox", "roblox")
         if "catalog/" in item_id1:
             item_id = item_id1.split("/catalog/")[1].split("/")[0]
         elif "item/" in item_id1:
@@ -450,6 +454,7 @@ async def item2game_error(ctx, error):
 async def item2places(ctx, item_id1: str):
     print(f"{ctx.message.author} used the command: item2places with {item_id1}")
     try:
+        item_id1 = item_id1.replace("fxroblox", "roblox")
         if "catalog/" in item_id1:
             item_id = item_id1.split("/catalog/")[1].split("/")[0]
         elif "item/" in item_id1:
@@ -510,6 +515,7 @@ async def item2places_error(ctx, error):
 async def game2universe(ctx, game_id1: str):
     print(f"{ctx.message.author} used the command: game2universe with {game_id1}")
     try:
+        game_id1 = game_id1.replace("fxroblox", "roblox")
         if "games/" in game_id1:
             game_id = game_id1.split("/games/")[1].split("/")[0]
         else:
@@ -536,6 +542,7 @@ async def game2universe_error(ctx, error):
 async def game2places(ctx, game_id1: str):
     print(f"{ctx.message.author} used the command: game2places with {game_id1}")
     try:
+        game_id1 = game_id1.replace("fxroblox", "roblox")
         if "games/" in game_id1:
             game_id = game_id1.split("/games/")[1].split("/")[0]
         else:
@@ -626,6 +633,7 @@ async def support_error(ctx, error):
 @app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
 @commands.cooldown(1, 14, commands.BucketType.user)
 async def convertvip(ctx, vip_link: str):
+    vip_link = vip_link.replace("fxroblox", "roblox")
     print(f"{ctx.message.author} used the command: convertvip with {vip_link}")
     url = str(vip_link)
     response = session.get(url)
@@ -704,6 +712,7 @@ async def uwuify_error(ctx, error):
 async def uploader(ctx, item_id1: str):
     print(f"{ctx.message.author} used the command: uploader with {item_id1}")
     try:
+        item_id1 = item_id1.replace("fxroblox", "roblox")
         if "catalog/" in item_id1:
             item_id = item_id1.split("/catalog/")[1].split("/")[0]
         elif "item/" in item_id1:
@@ -787,6 +796,7 @@ async def uploader_error(ctx, error):
         em.timestamp = datetime.datetime.now(datetime.timezone.utc)
         em.set_footer(text='nyaa~w redblue was here ^~^', icon_url="https://i.imgur.com/hWCLhIZ.png")
         await ctx.reply(embed=em, mention_author=False, allowed_mentions=discord.AllowedMentions(everyone=False,roles=False,users=False))
+
 '''@bot.event
 async def on_message(message):
     await bot.process_commands(message)
