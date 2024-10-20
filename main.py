@@ -214,7 +214,7 @@ async def info(ctx, *, item_id1: str):
             if creatortype is not None:
                 description += f"\n``ᴸ``👥 **Creator Type:** {creatortype}\n"
             if details_data.get("IsForSale") is not None:
-                description += "\n💰 **On Sale**: " + str(details_data.get("IsForSale"))
+                description += "\n💰 **On Sale:** " + str(details_data.get("IsForSale"))
             if assettypes.get(details_data.get('AssetTypeId')):
                 description += f"\n🔖 **Accessory Type:** {str(assettypes[details_data.get('AssetTypeId')])}"
 
@@ -239,12 +239,12 @@ async def info(ctx, *, item_id1: str):
             embed.set_footer(text='nyaa~w redblue was here ^~^', icon_url="https://i.imgur.com/hWCLhIZ.png")
             embed.add_field(
                 name="__💸 Price Information__",
-                value=f"> **Original Price**: {price_in_robux}" + (f"\n> **Lowest Resale Price**: {details_data.get('CollectiblesItemDetails', {}).get('CollectibleLowestResalePrice', 0)}" if details_data.get('CollectiblesItemDetails', {}) is not None and details_data.get('CollectiblesItemDetails', {}).get('CollectibleLowestResalePrice', 0) is not None and details_data.get('CollectiblesItemDetails', {}).get('CollectibleLowestResalePrice', 0) != 0 else ''),
+                value=f"> **Original Price:** {price_in_robux}" + (f"\n> **Lowest Resale Price:** {details_data.get('CollectiblesItemDetails', {}).get('CollectibleLowestResalePrice', 0)}" if details_data.get('CollectiblesItemDetails', {}) is not None and details_data.get('CollectiblesItemDetails', {}).get('CollectibleLowestResalePrice', 0) is not None and details_data.get('CollectiblesItemDetails', {}).get('CollectibleLowestResalePrice', 0) != 0 else ''),
                 inline=False
             )
             embed.add_field(
                 name="__⏰ Time Information__",
-                value=f"> **Created**: {creationdiscord_timestampTR} | {creationdiscord_timestampT}\n> **Last Updated**: {updatediscord_timestampTR} | {updatediscord_timestampT}",
+                value=f"> **Created:** {creationdiscord_timestampTR} | {creationdiscord_timestampT}\n> **Last Updated:** {updatediscord_timestampTR} | {updatediscord_timestampT}",
                 inline=False
             )
 
