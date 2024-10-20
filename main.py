@@ -324,9 +324,9 @@ async def stock(ctx, *, item_id1: str):
                         remaining_percent = None
                     embed.add_field(
                         name="📊 __Stock Info__",
-                        value=f"> 🛒 Remaining: {remaining}/{total_quantity}\n" +
-                        (f"> 💯 Percentage Left: {given_percent:.1f}% | ({str(remaining)} left)\n" if given_percent is not None else '') +
-                        (f"> 📉 Percentage Sold: {remaining_percent:.1f}% | ({str(total_quantity - remaining)} sold)" if remaining_percent is not None else ''),
+                        value=f"> **Remaining:** {remaining}/{total_quantity}\n" +
+                        (f"> **Percentage Left:** {given_percent:.1f}% | ({str(remaining)} left)\n" if given_percent is not None else '') +
+                        (f"> **Percentage Sold:** {remaining_percent:.1f}% | ({str(total_quantity - remaining)} sold)" if remaining_percent is not None else ''),
                         inline=False
                     )
 
@@ -739,13 +739,13 @@ async def uploader(ctx, item_id1: str):
                 if details_data.get("Creator", {}).get("CreatorType") == "User":
                     creatorname = details_data.get("Creator", {}).get("Name")
                     creatorid = details_data.get("Creator", {}).get("Id")
-                    em = discord.Embed(title=f"Asset Uploader Found!")
-                    em.add_field(name=f"Item Id: {item_id}", value=f"https://www.roblox.com/catalog/{item_id}/Redblue", inline=False)
+                    em = discord.Embed(title="🎉 Asset Uploader Found!")
+                    em.add_field(name=f"🔖  Item Id: {item_id}", value=f"https://www.roblox.com/catalog/{item_id}/Redblue", inline=False)
                     player_url = f"https://users.roblox.com/v1/users/{str(creatorid)}"
                     player_response = session.get(player_url)
                     thumbnail_url = f"https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds={str(creatorid)}&size=352x352&format=Png&isCircular=false"
                     thumbnail_response = session.get(thumbnail_url)
-                    em.add_field(name=f"Creator ID: {creatorid}", value=f"https://www.roblox.com/users/{str(creatorid)}/profile", inline=False)
+                    em.add_field(name=f"🆔 Creator ID: {creatorid}", value=f"https://www.roblox.com/users/{str(creatorid)}/profile", inline=False)
                     em.timestamp = datetime.datetime.now(datetime.timezone.utc)
                     em.set_footer(text='nyaa~w redblue was here ^~^', icon_url="https://i.imgur.com/hWCLhIZ.png")
                     if thumbnail_response.status_code == 200:
@@ -753,19 +753,19 @@ async def uploader(ctx, item_id1: str):
                         em.set_thumbnail(url=str(thumbnail_data["data"][0]["imageUrl"]))
                     if player_response.status_code == 200:
                         player_response_data = player_response.json()
-                        em.add_field(name=f"Creator Name: {creatorname}", value=f"Creator Display Name: **{player_response_data.get('displayName')}**", inline=False)
+                        em.add_field(name=f"👤 Creator Name: {creatorname}", value=f"👥 **Creator Display Name: {player_response_data.get('displayName')}**", inline=False)
                     await ctx.reply(embed=em, mention_author=False, allowed_mentions=discord.AllowedMentions(everyone=False,roles=False,users=False))
                 else:
                     creatorname = details_data.get("Creator", {}).get("Name")
                     creatorid = details_data.get("Creator", {}).get("CreatorTargetId")
-                    em = discord.Embed(title=f"Asset Uploader Found!")
-                    em.add_field(name=f"Item Id: {item_id}", value=f"https://www.roblox.com/catalog/{item_id}/Redblue", inline=False)
+                    em = discord.Embed(title="🎉 Asset Uploader Found!")
+                    em.add_field(name=f"🔖  Item Id: {item_id}", value=f"https://www.roblox.com/catalog/{item_id}/Redblue", inline=False)
                     player_url = f"https://groups.roblox.com/v2/groups?groupIds={str(creatorid)}"
                     print(player_url)
                     player_response = session.get(player_url)
                     thumbnail_url = f"https://thumbnails.roblox.com/v1/groups/icons?groupIds={str(creatorid)}&size=420x420&format=Png&isCircular=false"
                     thumbnail_response = session.get(thumbnail_url)
-                    em.add_field(name=f"Group ID: {creatorid}", value=f"https://www.roblox.com/groups/{str(creatorid)}/profile", inline=False)
+                    em.add_field(name=f"👤 Group ID: {creatorid}", value=f"https://www.roblox.com/groups/{str(creatorid)}/profile", inline=False)
                     em.timestamp = datetime.datetime.now(datetime.timezone.utc)
                     em.set_footer(text='nyaa~w redblue was here ^~^', icon_url="https://i.imgur.com/hWCLhIZ.png")
                     if thumbnail_response.status_code == 200:
@@ -776,17 +776,17 @@ async def uploader(ctx, item_id1: str):
                         print(player_response_data)
                         userid = player_response_data['data'][0]['owner']['id']
                         if userid and userid is not None:
-                            em.add_field(name=f"Group Name: {creatorname}", value=f"Group Owner ID: **{userid}** \n Link: **https://www.roblox.com/users/{str(userid)}/profile**", inline=False)
+                            em.add_field(name=f"👥 Group Name: {creatorname}", value=f"**🆔 Group Owner ID: {userid}** \n **🔗 Link:** https://www.roblox.com/users/{str(userid)}/profile", inline=False)
                     await ctx.reply(embed=em, mention_author=False, allowed_mentions=discord.AllowedMentions(everyone=False,roles=False,users=False))
             else:
-                await ctx.reply("Error Finding the Uploader!", mention_author=False, allowed_mentions=discord.AllowedMentions(everyone=False,roles=False,users=False))
+                await ctx.reply("❌ Error Finding the Uploader!", mention_author=False, allowed_mentions=discord.AllowedMentions(everyone=False,roles=False,users=False))
         else:
-            await ctx.reply(f"Error: {response.status_code}", mention_author=False, allowed_mentions=discord.AllowedMentions(everyone=False,roles=False,users=False))
+            await ctx.reply(f"❌ Error: {response.status_code}", mention_author=False, allowed_mentions=discord.AllowedMentions(everyone=False,roles=False,users=False))
         if item_id1 is None: 
-            await ctx.reply("Please add an item link or an item id", mention_author=False, allowed_mentions=discord.AllowedMentions(everyone=False,roles=False,users=False))
+            await ctx.reply("⚠️ Please add an item link or an item id", mention_author=False, allowed_mentions=discord.AllowedMentions(everyone=False,roles=False,users=False))
     except Exception as e:
         traceback.print_exc()
-        await ctx.reply("An error occurred (are you sure it was an accessory?)", mention_author=False, allowed_mentions=discord.AllowedMentions(everyone=False,roles=False,users=False))
+        await ctx.reply("⚠️ An error occurred (are you sure it was an accessory?)", mention_author=False, allowed_mentions=discord.AllowedMentions(everyone=False,roles=False,users=False))
 
 
 @uploader.error
