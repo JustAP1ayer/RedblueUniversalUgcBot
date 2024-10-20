@@ -51,6 +51,7 @@ def uwu_converter(message):
 
     uwu_message += f'~ {random_emoji}'
     return uwu_message
+
 assettypes = {
     1: "Image",
     2: "T-Shirt",
@@ -167,6 +168,7 @@ async def info(ctx, *, item_id1: str):
 
             name = details_data.get("Name")
             creator = details_data.get("Creator", {}).get("Name")
+            creatortype = details_data.get("Creator", {}).get("CreatorType")
             price_in_robux = details_data.get("PriceInRobux")
             descriptionitem = details_data.get("Description")
             
@@ -208,12 +210,14 @@ async def info(ctx, *, item_id1: str):
                 quantity_limit = None
 
             description = f"# [{name}](https://www.roblox.com/catalog/{item_id}/)\n**👤 Creator:** {creator}"
+            if creatortype is not None:
+                description += f"\n``ᴸ``👥 **Creator Type:** {creatortype}\n"
             if details_data.get("IsForSale") is not None:
                 description += "\n💰 **On Sale**: " + str(details_data.get("IsForSale"))
             if assettypes.get(details_data.get('AssetTypeId')):
                 description += f"\n🔖 **Accessory Type:** {str(assettypes[details_data.get('AssetTypeId')])}"
 
-            description += f"\n📝 **Description:**\n ```{descriptionitem} ```"
+            description += f"\n\n📝 **Description:**\n ```{descriptionitem} ```"
 
             if quantity_limit is not None:
                 description += f"\n🔢 **Quantity Limit:** {quantity_limit} Per User"
@@ -253,9 +257,9 @@ async def info(ctx, *, item_id1: str):
             if remaining is not None and total_quantity is not None and total_quantity != 0:
                 embed.add_field(
                     name="__📦 Stock Info__",
-                    value=(f"> Remaining: {remaining}/{total_quantity}\n" if remaining is not None and total_quantity is not None else '') +
-                            (f"> Percentage Left: {given_percent:.1f}% | ({str(remaining)} left)\n" if given_percent is not None else '') +
-                            (f"> Percentage Sold: {remaining_percent:.1f}% | ({str(total_quantity-remaining)} sold)" if remaining_percent is not None else ''),
+                    value=(f"> **Remaining:** {remaining}/{total_quantity}\n" if remaining is not None and total_quantity is not None else '') +
+                            (f"> **Percentage Left:** {given_percent:.1f}% | ({str(remaining)} left)\n" if given_percent is not None else '') +
+                            (f"> **Percentage Sold:** {remaining_percent:.1f}% | ({str(total_quantity-remaining)} sold)" if remaining_percent is not None else ''),
                     inline=False
                 )
             if details_data.get("SaleLocation", {}) and details_data.get("SaleLocation", {}).get("UniverseIds", []):
